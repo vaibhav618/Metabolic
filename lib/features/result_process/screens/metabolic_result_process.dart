@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 // Import your ArcRuler widget here.
 // Adjust the path if it is in a different folder (e.g., 'package:my_app/widgets/arc_ruler.dart')
 import 'package:metabolic/features/result_process/widgets/arc_ruler.dart';
+import 'score_chart_screen.dart';
 
 class MetabolismResultProcess extends StatefulWidget {
   final double score; // Score from 0 to 100
@@ -118,13 +119,16 @@ class _MetabolismResultProcessState extends State<MetabolismResultProcess>
 
   @override
   Widget build(BuildContext context) {
+    // 1. Calculate dynamic scale based on a standard 375px width screen
+    final screenWidth = MediaQuery.of(context).size.width;
+    final dynamicScale = screenWidth / 375.0;
+
+    // 2. Scale the dome base size (using your exact 628 value)
+    final domeSize = 508.0 * dynamicScale;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: const BackButton(color: Colors.black),
-      ),
+      appBar: AppBar(backgroundColor: Colors.transparent),
       body: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
@@ -137,7 +141,7 @@ class _MetabolismResultProcessState extends State<MetabolismResultProcess>
             children: [
               // --- SCORE TEXT SECTION ---
               Positioned(
-                top: 60,
+                top: 60 * dynamicScale, // Scaled positioning
                 child: Column(
                   children: [
                     Text(
@@ -183,122 +187,174 @@ class _MetabolismResultProcessState extends State<MetabolismResultProcess>
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
                   width: double.infinity,
-                  height: 450,
+                  height: 450 * dynamicScale, // Scaled container
                   child: Stack(
                     alignment: Alignment.topCenter,
                     clipBehavior: Clip.none,
                     children: [
                       // The Color Dome
                       Positioned(
-                        top: 100,
-                        child: Container(
-                          width: 628,
-                          height: 628,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                currentDomeColor.withOpacity(0.7),
-                                currentDomeColor,
-                              ],
-                              stops: const [0.0, 0.2],
+                        top: 70 * dynamicScale, // Scaled positioning
+                        child: Hero(
+                          tag: "Key",
+                          child: Container(
+                            width: domeSize, // Responsive width
+                            height: domeSize, // Responsive height
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  currentDomeColor.withOpacity(0.6),
+                                  currentDomeColor,
+                                ],
+                                stops: const [0.0, 0.13],
+                              ),
                             ),
-                          ),
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 140),
-
-                              // The sliding text block
-                              Transform.translate(
-                                offset: Offset(0, _slideUpAnimation.value),
-                                child: SizedBox(
-                                  width: 280,
-                                  height: 70, // Fixed height limits jumps
-                                  child: Stack(
-                                    alignment: Alignment.topCenter,
-                                    children: [
-                                      // Initial Text
-                                      Opacity(
-                                        opacity: _textFadeOutAnimation.value,
-                                        child: Text(
-                                          "Your score falls in...",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.white,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: -1,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 160 * dynamicScale,
+                                ), // Scaled inner spacing
+                                // The sliding text block
+                                Transform.translate(
+                                  offset: Offset(0, _slideUpAnimation.value),
+                                  child: SizedBox(
+                                    width: 280,
+                                    height: 70, // Fixed height limits jumps
+                                    child: Stack(
+                                      alignment: Alignment.topCenter,
+                                      children: [
+                                        // Initial Text
+                                        Opacity(
+                                          opacity: _textFadeOutAnimation.value,
+                                          child: Text(
+                                            "Your score falls in...",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: -1,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      // Final Result Text
-                                      Opacity(
-                                        opacity: _textFadeInAnimation.value,
-                                        child: Text(
-                                          "Great. Your score falls in\n${_getStatusText(widget.score)} range!",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.poppins(
-                                            color: Colors.white,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: -1,
+                                        // Final Result Text
+                                        Opacity(
+                                          opacity: _textFadeInAnimation.value,
+                                          child: Text(
+                                            "Great. Your score falls in\n${_getStatusText(widget.score)} range!",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.white,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: -1,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(height: 20),
-
-                              // The Button (Follows the text up, fading in as it does)
-                              Transform.translate(
-                                offset: Offset(
-                                  0,
-                                  _slideUpAnimation.value +
-                                      (1 - _buttonFadeInAnimation.value) * 15,
-                                ),
-                                child: Opacity(
-                                  opacity: _buttonFadeInAnimation.value,
-                                  child: OutlinedButton(
-                                    onPressed:
-                                        _buttonFadeInAnimation.value > 0.8
-                                        ? () {}
-                                        : null,
-                                    style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(
-                                        color: Colors.white,
-                                      ),
-                                      shape: const StadiumBorder(),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 20,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "What it means?",
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.10,
-                                        letterSpacing: 0.30,
-                                      ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+
+                                SizedBox(
+                                  height: 30 * dynamicScale,
+                                ), // Scaled inner spacing
+                                // The Button (Follows the text up, fading in as it does)
+                                Transform.translate(
+                                  offset: Offset(
+                                    0,
+                                    _slideUpAnimation.value +
+                                        (1 - _buttonFadeInAnimation.value) * 15,
+                                  ),
+                                  child: Opacity(
+                                    opacity: _buttonFadeInAnimation.value,
+                                    child: OutlinedButton(
+                                      onPressed:
+                                          _buttonFadeInAnimation.value > 0.8
+                                          ? () {
+                                              Navigator.push(
+                                                context,
+                                                PageRouteBuilder(
+                                                  // CHANGED BACK TO 800ms for that slow, majestic glide
+                                                  transitionDuration:
+                                                      const Duration(
+                                                        milliseconds: 850,
+                                                      ),
+                                                  pageBuilder:
+                                                      (
+                                                        context,
+                                                        animation,
+                                                        secondaryAnimation,
+                                                      ) => ScoreChartScreen(
+                                                        domeColor:
+                                                            currentDomeColor,
+                                                      ),
+                                                  transitionsBuilder:
+                                                      (
+                                                        context,
+                                                        animation,
+                                                        secondaryAnimation,
+                                                        child,
+                                                      ) {
+                                                        // The Stack instantly covers the old screen with white
+                                                        return Stack(
+                                                          children: [
+                                                            Container(
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            FadeTransition(
+                                                              opacity:
+                                                                  CurvedAnimation(
+                                                                    parent:
+                                                                        animation,
+                                                                    curve: Curves
+                                                                        .easeOut,
+                                                                  ),
+                                                              child: child,
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                ),
+                                              );
+                                            }
+                                          : null,
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                          color: Colors.white,
+                                        ),
+                                        shape: const StadiumBorder(),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 20,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "What it means?",
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.10,
+                                          letterSpacing: 0.30,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
 
                       // YOUR EXTERNAL ARC RULER WIDGET
                       Positioned(
-                        top: 80,
+                        top: 70 * dynamicScale, // Scaled positioning
                         left: 0,
                         right: 0,
                         child: IgnorePointer(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'improve.dart'; // Add this line! Adjust the path if it's in a different folder.
 
 class FoodPreferancesScreen extends StatefulWidget {
   const FoodPreferancesScreen({super.key});
@@ -20,15 +22,8 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
     'Pescatarian(Only fish)',
   ];
 
-  // State for selected cuisines
-  final List<String> _selectedCuisines = [
-    'Location Based',
-    'Indian',
-    'Mexican',
-  ];
-
   // Custom blue color from the design
-  final Color primaryBlue = const Color(0xFF5284FF);
+  final Color primaryBlue = const Color(0xFF308BF9);
 
   @override
   Widget build(BuildContext context) {
@@ -42,17 +37,16 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
             children: [
               // Title
               const SizedBox(height: 16),
-              const Text(
-                'Tell us your food\npreferences',
-                style: TextStyle(
+              Text(
+                'Tell us your food preferences',
+                style: GoogleFonts.poppins(
+                  color: const Color(0xFF252525),
                   fontSize: 32,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2,
-                  letterSpacing: -0.5,
-                  color: Color(0xFF1A1A1A),
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: -2.04,
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 35),
 
               // Scrollable content area
               Expanded(
@@ -61,65 +55,20 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Dietary Preferences Section
-                      const Text(
+                      Text(
                         'Choose dietary preferences',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF5A5A5A),
+                        style: GoogleFonts.poppins(
+                          color: const Color(0xFF535359),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          height: 1.10,
+                          letterSpacing: -0.30,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 18),
 
                       // Diet Options List
-                      ..._dietOptions
-                          .map((option) => _buildDietOption(option))
-                          .toList(),
-
-                      const SizedBox(height: 32),
-
-                      // Cuisine Section
-                      const Text(
-                        'Choose cuisine',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF5A5A5A),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-
-                      // Search TextField
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Search cuisine',
-                          hintStyle: const TextStyle(color: Colors.grey),
-                          suffixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: primaryBlue),
-                          ),
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Selected Cuisine Chips
-                      Wrap(
-                        spacing: 12.0,
-                        runSpacing: 12.0,
-                        children: _selectedCuisines.map((cuisine) {
-                          return _buildCuisineChip(cuisine);
-                        }).toList(),
-                      ),
+                      ..._dietOptions.map((option) => _buildDietOption(option)),
                     ],
                   ),
                 ),
@@ -144,7 +93,12 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
                   // Next/Forward Button
                   InkWell(
                     onTap: () {
-                      // Handle next action
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ImproveScreen(),
+                        ),
+                      );
                     },
                     borderRadius: BorderRadius.circular(30),
                     child: Container(
@@ -152,7 +106,7 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
                       height: 56,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: primaryBlue,
+                        color: const Color(0xFF308BF9),
                       ),
                       child: const Icon(
                         Icons.arrow_forward_ios,
@@ -189,9 +143,12 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
           children: [
             Text(
               title,
-              style: TextStyle(
-                fontSize: 16,
-                color: isSelected ? primaryBlue : const Color(0xFF2D2D2D),
+              style: GoogleFonts.poppins(
+                color: isSelected ? primaryBlue : const Color(0xFF252525),
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
+                height: 1.30,
+                letterSpacing: -0.30,
               ),
             ),
             Container(
@@ -207,11 +164,15 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
               child: isSelected
                   ? Center(
                       child: Container(
-                        width: 14,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: primaryBlue,
+                        width: 18,
+                        height: 18,
+                        decoration: const ShapeDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment(0.50, -0.00),
+                            end: Alignment(0.50, 1.00),
+                            colors: [Color(0xFF308BF9), Color(0xFF8EC1FF)],
+                          ),
+                          shape: OvalBorder(),
                         ),
                       ),
                     )
@@ -219,33 +180,6 @@ class _FoodPreferancesScreenState extends State<FoodPreferancesScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Custom chip widget to exactly match the outlined style with cross
-  Widget _buildCuisineChip(String label) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: primaryBlue, width: 1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: TextStyle(color: primaryBlue, fontSize: 14)),
-          const SizedBox(width: 8),
-          InkWell(
-            onTap: () {
-              setState(() {
-                _selectedCuisines.remove(label);
-              });
-            },
-            child: Icon(Icons.close, size: 16, color: primaryBlue),
-          ),
-        ],
       ),
     );
   }

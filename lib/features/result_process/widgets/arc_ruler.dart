@@ -187,13 +187,13 @@ class _ArcRulerPainter extends CustomPainter {
     final center = Offset(w / 2, y);
 
     // ===== TICKS =====
-    const int tickCount =
-        80; // CHANGED: Increased from 50 to 80 to make them closer
-    const double tickLen = 4.0; // Kept the shorter height you liked
+    const int tickCount = 50; // CHANGED: Reduced from 100 to increase spacing
+    const double tickLen = 4.0; // CHANGED: Reduced from 7 to make lines shorter
 
     final tickPaint = Paint()
       ..color = const Color(0xFFE1E6ED)
-      ..strokeWidth = 2.0
+      ..strokeWidth =
+          2.0 // CHANGED: Slightly thinner to match the new shorter height
       ..strokeCap = StrokeCap.square
       ..isAntiAlias = true;
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:metabolic/features/food_preference/food_preferences.dart';
+// import 'package:metabolic/features/food_preference/food_preferences.dart';
+import 'package:metabolic/features/result_process/screens/metabolic_result_process.dart';
 // import 'package:metabolic/features/result_process/screens/metabolic_result_process.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       // 65.0 -> Red (Severe)
       // 75.0 -> Yellow (Moderate)
       // 88.0 -> Green (Good)
-      home: FoodPreferancesScreen(),
+      home: MetabolismResultProcess(score: 82),
     );
   }
 }
